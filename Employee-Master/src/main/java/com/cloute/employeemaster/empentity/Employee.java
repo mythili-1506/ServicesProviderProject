@@ -24,11 +24,10 @@ public class Employee {
 		
 		@Id
 		@GeneratedValue(strategy = GenerationType.IDENTITY)
-		@Column(name = "sno")
-		private Long sno;
+		private Long employeeId;  // employeeId
 		
 //		@Column(name = "empId", length = 30)
-		private String employeeId; 
+		private String employeeCode;  //code
 		
 //		@Column(name = "empFirstname",length = 20)
 		private String empFirstName;
@@ -66,23 +65,13 @@ public class Employee {
 //		@Column(name = "empCountry",length = 20)
 		private String country;
 		
-//		@Column(name = "empLevel", length = 10)
-		private String empRole;
-		
-		private Long empBranch;
-		
-		private int empDesig;
+		private int assignedArea;
 		
 //		@Column(length = 5,nullable = false)
 		private int empStatus;
 		
 //		@Column(length = 100)
 		private String empEmail;
-		
-//		@Column(length = 10)
-		private String createdBy;
-		
-		private Timestamp createdTime;
 		
 //		@Column(length = 10)
 		private String modifyby;

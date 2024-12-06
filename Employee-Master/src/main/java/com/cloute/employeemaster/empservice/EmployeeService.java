@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.cloute.employeemaster.empentity.Employee;
 import com.cloute.employeemaster.emprepository.EmpRepository;
@@ -18,52 +19,57 @@ public class EmployeeService {
 	@Autowired
 	EmpRepository  empRepo;
  
+	
 	public ResponseEntity<?> addEmployeeDetails(Employee employee) {
 		
 		employee.setEmpStatus(200);
-		employee.setCreatedTime(new Timestamp(System.currentTimeMillis()));
+//		employee.setCreatedTime(new Timestamp(System.currentTimeMillis()));
 		
 		empRepo.save(employee);
 		return ResponseEntity.ok("created");
 	}
 	
 	
-public ResponseEntity<?> getByEmployeeID(long employeeId) {
+	public ResponseEntity<?> getByEmployeeID(long employeeId) {
 		
-		Optional<Employee> emp = empRepo.findByEmployeeId(employeeId);
+			Optional<Employee> emp = empRepo.findByEmployeeId(employeeId);
+			
+			if(emp.isEmpty()){
+			
+				return new ResponseEntity<>("No employee in this id ",HttpStatus.NO_CONTENT);
+			}
 		
-		if(emp.isEmpty())
+			return ResponseEntity.ok(emp);
+	}
+
+
+	public ResponseEntity<?> getAllEmployee() {
+	
+		List<Employee> empList = empRepo.findByEmpStatus(200);
+		if(empList.isEmpty())
 		{
-			return new ResponseEntity<>("No employee in this id ",HttpStatus.NO_CONTENT);
+			return new ResponseEntity<>("there is no active machine details",HttpStatus.NOT_FOUND);
 		}
+	
+		return ResponseEntity.ok(empList);
+	
+	}
+
+
+	public ResponseEntity<?> deleteEmployee(long employeeId) {
 		
-		return ResponseEntity.ok(emp);
-	}
-
-
-public ResponseEntity<?> getAllEmployee() {
+		Optional<Employee> empOpti = empRepo.findByEmployeeId(employeeId);
+		
+		if (empOpti.isEmpty()) {
+			
+			return new ResponseEntity<>("No details in this id",HttpStatus.NOT_FOUND);
+		}
 	
-	List<Employee> empList = empRepo.findByEmpStatus(200);
-	if(empList.isEmpty())
-	{
-		return new ResponseEntity<>("there is no active machine details",HttpStatus.NOT_FOUND);
-	}
+		Employee emp  = empOpti.get();
 	
-	return ResponseEntity.ok(empList);
-	}
-
-
-public ResponseEntity<?> deleteEmployee(long employeeId) {
-	Optional<Employee> empOpti = empRepo.findByEmployeeId(employeeId);
-	if (empOpti.isEmpty()) {
-		return new ResponseEntity<>("No details in this id",HttpStatus.NOT_FOUND);
-	}
+		emp.setEmpStatus(404);
 	
-	Employee emp  = empOpti.get();
-	
-	emp.setEmpStatus(404);
-	
-	return ResponseEntity.ok("Deleted");
-	
+		return ResponseEntity.ok("Deleted");
+		
 	}
 }

@@ -4,7 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.cloute.employeemaster.empentity.Employee;
@@ -18,25 +20,25 @@ public class EmpController {
 	EmployeeService empservice;
 	
 	@PostMapping("/addemployee")
-	public ResponseEntity<?> addMachineDetails(Employee emp) {
+	public ResponseEntity<?> addMachineDetails(@RequestBody Employee emp) {
 		return empservice.addEmployeeDetails(emp);
 	}
 	
 	
 	@GetMapping("/getempid/{employeeId}")
-	public ResponseEntity<?> getByEmployeeID(long employeeId) {
+	public ResponseEntity<?> getByEmployeeID(@PathVariable Long employeeId) {
 		return empservice.getByEmployeeID(employeeId);
 	}
 	
 	
-	@GetMapping("/getall")
+	@GetMapping("/getallemp")
 	public ResponseEntity<?> getAllEmployee() {
 		return empservice.getAllEmployee();
 	}
 	
 	
-	@PostMapping("/delete")
-	public ResponseEntity<?> deleteEmployee(long employeeId) {
+	@PostMapping("/deleteemp/{employeeId}")
+	public ResponseEntity<?> deleteEmployee(@PathVariable Long employeeId) {
 		return empservice.deleteEmployee(employeeId);
 	}
 }

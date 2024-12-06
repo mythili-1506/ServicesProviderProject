@@ -1,19 +1,17 @@
-package com.example.machineMaster.mechineController;
+package com.cloute.machineMaster.mechineController;
 
-import java.security.PublicKey;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-
-import com.example.machineMaster.mechineEntity.MachineMaster;
-import com.example.machineMaster.mechineService.MachineService;
-
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.cloute.machineMaster.mechineEntity.MachineMaster;
+import com.cloute.machineMaster.mechineService.MachineService;
 
 
 @Controller
@@ -21,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class MachineController {
 	
 	@Autowired
-	
 	MachineService machineService;
 	
 	@PostMapping("/addmachine")
@@ -30,21 +27,32 @@ public class MachineController {
 		return machineService.addMachineDetails(mech);
 	}
 	
-	@GetMapping("/getcustbyid/{custID}")
-	public ResponseEntity<?> getByCustID(@PathVariable long custID)
-	{
-		return machineService.getByCustID(custID);	
+	@GetMapping("/getmachinebyid/{machineId}")
+	public ResponseEntity<?> getByCustID(@PathVariable Long machineId){
+		
+		return machineService.getByMachineId(machineId);
+	
 	}
 	
 	@GetMapping("/getallmachine")
-	public ResponseEntity<?> getAllmachine()
-	{
+	public ResponseEntity<?> getAllmachine(){
+		
 		return machineService.getAllmachine();
+	
 	}
 	
 	
-	@PostMapping("/deleteMachine/{custID}")
-	private ResponseEntity<?> deleteMachine(@PathVariable long custID) {
-		return machineService.deleteMachine(custID);
+	@PostMapping("/deletemachine/{machineId}")
+	private ResponseEntity<?> deleteMachine(@PathVariable Long machineId) {
+		
+		return machineService.deleteMachine(machineId);
+	
 	}
+	
+	
+	private ResponseEntity<?>fetchProductDetailsUsingProductId(@PathVariable Long machineId){
+		
+		return machineService.fetchProductDetailsUsingProductId(machineId);
+	}
+	
 }

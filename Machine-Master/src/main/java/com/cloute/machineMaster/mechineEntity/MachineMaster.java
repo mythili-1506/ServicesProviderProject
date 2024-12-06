@@ -1,4 +1,4 @@
-package com.example.machineMaster.mechineEntity;
+package com.cloute.machineMaster.mechineEntity;
 
 import java.sql.Date;
 import java.sql.Time;
@@ -22,23 +22,17 @@ public class MachineMaster {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long custSno;
+	private Long machineId;
+	
+	private String machSearialNo; 
 	
 	private long custID;
 	
-	private String custAdd1;
+	private long productId;
 	
-	private String custAdd2;
+	private Date dateOfIntallation; //admin want to be enter the date
 	
-	private String custCity;
-	
-	private long custPincode;
-	
-	private long machSno;
-	
-	private String assignEmployee;
-	
-	private String productName;
+//	private long employeeId;
 	
 	private Timestamp warrantyStartDate;
 	
@@ -47,8 +41,6 @@ public class MachineMaster {
 	private Timestamp amcStartDate;
 	
 	private Timestamp amcEndDate;
-	
-	private Date dateOfIntallation;
 	
 	private int status; //active = 200 delete = 404
 	
