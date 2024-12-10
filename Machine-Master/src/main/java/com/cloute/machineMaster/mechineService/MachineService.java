@@ -3,7 +3,6 @@ package com.cloute.machineMaster.mechineService;
 import java.util.List;
 import java.util.Optional;
 
-import org.hibernate.query.NativeQuery.ReturnableResultNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,10 +11,14 @@ import org.springframework.stereotype.Service;
 import com.cloute.machineMaster.dtoclass.CustomerDto;
 import com.cloute.machineMaster.dtoclass.MachineDetailsDto;
 import com.cloute.machineMaster.dtoclass.ProductDto;
+import com.cloute.machineMaster.exceptionhandling.CustomerFeignException;
+import com.cloute.machineMaster.exceptionhandling.ProductFeignException;
+import com.cloute.machineMaster.feignClients.CustomerDetailsFeign;
+import com.cloute.machineMaster.feignClients.ProductDetailsFeign;
 import com.cloute.machineMaster.mechineEntity.MachineMaster;
 import com.cloute.machineMaster.mechineRepository.MachineRepository;
-import com.cloute.productmaster.feigncliend.CustomerDetailsFeign;
-import com.cloute.productmaster.feigncliend.ProductDetailsFeign;
+
+import feign.FeignException;
 
 @Service
 public class MachineService {
@@ -24,16 +27,43 @@ public class MachineService {
 	MachineRepository machineRepo;
 	
 	@Autowired
-	ProductDetailsFeign productFeign;
+	CustomerDetailsFeign customerFeign;
 	
 	@Autowired
-	CustomerDetailsFeign customerFeign;
+	ProductDetailsFeign productFeign;
+	
+	
+	
+	private ProductDto productFeignConnect(long productId) {
+		
+		ProductDto productDto ;
+		
+		try {
+			productDto = productFeign.getByProductId(productId).getBody();
+		} catch (FeignException e) {
+			throw new ProductFeignException(e.status(), "Product Not Found");
+		}
+		return productDto;
+	}
+	
+	
+	
+	private CustomerDto customerFeignConnect(long custID) {
+		
+		CustomerDto customerDto;
+		
+		try {
+			customerDto = customerFeign.getCustByID(custID).getBody();
+		} catch (FeignException e) {
+			throw new CustomerFeignException(e.status(),"customer not found");
+		}
+		return customerDto;
+	}
 	
 	
 	public ResponseEntity<?>addMachineDetails(MachineMaster mech)
 	{	
-//		mech.setWarrantyStartDate(new Timestamp(System.currentTimeMillis()));
-//		mech.setAmcStartDate(new Timestamp(System.currentTimeMillis()));
+		
 		mech.setStatus(200);
 		machineRepo.save(mech);
 		
@@ -47,7 +77,7 @@ public class MachineService {
 		
 		if(mech.isEmpty())
 		{
-			return new ResponseEntity<>("No machine in this id ",HttpStatus.NO_CONTENT);
+			throw new RuntimeException("No machine in this id");
 		}
 		
 		return ResponseEntity.ok(mech);
@@ -85,16 +115,16 @@ public class MachineService {
 
 	public ResponseEntity<?>fetchProductDetailsUsingProductId(long machineId) {
 		
-		Optional<MachineMaster>machineOpti = machineRepo.findByProductId(machineId);
+		Optional<MachineMaster>machineOpti = machineRepo.findById(machineId);
 		if (machineOpti.isEmpty()) {
-			return new ResponseEntity<>("There is no product in this id",HttpStatus.NO_CONTENT);
+			return new ResponseEntity<>("There is no product in this id",HttpStatus.NOT_FOUND);
 		}
 		
 		MachineMaster machine = machineOpti.get();
 		
-		ProductDto product = productFeign.getByProductId(machine.getProductId()).getBody();
-		
-		CustomerDto customer = customerFeign.getCustByID(machine.getCustID()).getBody();
+		ProductDto product = productFeignConnect(machine.getProductId());
+				
+		CustomerDto customer = customerFeignConnect(machine.getCustID());
 		
 		MachineDetailsDto machineDetailsDto = MachineDetailsDto.builder()
 				                              .amcEndDate(machine.getAmcEndDate())

@@ -31,7 +31,7 @@ public class ProductService {
 		Optional<ProductMaster> product = productRepo.findById(productId);
 		
 		if(product.isEmpty()) {
-			return new ResponseEntity<>("There is no poduct available in this productid",HttpStatus.NO_CONTENT);
+			return new ResponseEntity<>("There is no poduct available in this productid",HttpStatus.NOT_FOUND);
 		}
 		
 		return ResponseEntity.ok(product);

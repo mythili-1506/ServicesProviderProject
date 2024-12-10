@@ -16,6 +16,5 @@ public interface MachineRepository extends JpaRepository <MachineMaster,Long>{
 
 	List<MachineMaster> findByStatus(int i);
 
-	Optional<MachineMaster> findByProductId(long productId);
 	
 }

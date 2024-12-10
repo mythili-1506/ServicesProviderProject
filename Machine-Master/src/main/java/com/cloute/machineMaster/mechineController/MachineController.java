@@ -49,7 +49,7 @@ public class MachineController {
 	
 	}
 	
-	
+	@GetMapping("/getprdbymachine/{machineId}")
 	private ResponseEntity<?>fetchProductDetailsUsingProductId(@PathVariable Long machineId){
 		
 		return machineService.fetchProductDetailsUsingProductId(machineId);
